@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <title>Heart Rate Chart</title>
+    </head>
+    <body>
+    <div>
+      <canvas id="hr_chart"></canvas>
+    </div>
+        <script>
+            const labels = {{ hr_date|map('string')|list|tojson }}
+            const data = {
+              labels: labels,
+              datasets: [{
+                label: 'Resting Heart Rate',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: {{hr_rhr}},
+              }]
+            };
+            const config = {
+              type: 'line',
+              data,
+              options: {}
+            };
+            var myChart = new Chart(
+              document.getElementById('hr_chart'),
+              config
+            );
+        </script>
+    </body>
+</html>

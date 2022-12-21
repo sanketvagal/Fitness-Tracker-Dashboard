@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Sleep Chart</title>
+</head>
+<body>
+<div>
+    <canvas id="sleep_graph"></canvas>
+</div>
+<script>
+const labels = {{ sleep_date|map('string')|list|tojson }}
+const data = {
+    labels: labels,
+    datasets: [{
+        label: 'Sleep duration',
+        backgroundColor: 'rgb(255, 99, 132)',
+        borderColor: 'rgb(255, 99, 132)',
+        data: {{ sleep_hours }},
+}]
+};
+const config = {
+    type: 'bar',
+    data,
+    options: {}
+};
+var myChart = new Chart(
+    document.getElementById('sleep_graph'),
+    config
+);
+</script>
+</body>
+</html>

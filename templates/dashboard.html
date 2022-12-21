@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <title>Fitbit Dashboard</title>
+    </head>
+    <body>
+        <a href='{{url_for('display_sleep', startdate='2021-04-01', enddate='2021-05-10') }}' > Sleep Chart </a> <br>
+        <a href='{{url_for('display_rhr', startdate='2021-04-01', enddate='2021-05-10') }}' > Resting Heart Rate Chart </a><br>
+        <a href='{{url_for('display_steps', startdate='2021-04-01', enddate='2021-05-10') }}' > Steps Chart </a><br>
+        <a href='{{url_for('display_sleep_stages', startdate='2021-04-01', enddate='2021-05-10') }}' > Sleep Stages Chart </a><br>
+        <a href='{{url_for('display_calories', startdate='2021-04-01', enddate='2021-05-10') }}' > Calories Chart </a><br>
+
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6">
+                <canvas id="hr_chart"></canvas>
+            </div>
+            <div class="col-md-6">
+                <canvas id="sleep_chart"></canvas>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <canvas id="steps_chart"></canvas>
+            </div>
+            <div class="col-md-6">
+              <canvas id="sleep_rhr_chart"></canvas>
+            </div>
+          </div>
+          <div class="row">
+              <div class="col-md-3"></div>
+              <div class="col-md-6">
+                  <canvas id="sleep_stages_chart"></canvas>
+              </div>
+              <div class="col-md-3"></div>
+          </div>
+        </div>
+
+        <script>
+        // Heart Rate
+            const hr_labels = {{ hr_date|map('string')|list|tojson }}
+            const hr_data = {
+              labels: hr_labels,
+              datasets: [{
+                label: 'Resting Heart Rate',
+                backgroundColor: 'rgb(255, 99, 132)',
+                borderColor: 'rgb(255, 99, 132)',
+                data: {{ hr_rhr }},
+              }]
+            };
+
+        //Sleep
+            const sleep_labels = {{ sleep_date|map('string')|list|tojson }}
+            const sleep_data = {
+                labels: sleep_labels,
+                datasets: [{
+                    label: 'Sleep duration',
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: {{ sleep_hours }},
+                }]
+            };
+
+        //Steps
+            const steps_labels = {{ steps_date|map('string')|list|tojson }}
+            const steps_data = {
+                labels: steps_labels,
+                datasets: [{
+                    label: 'Number of Steps',
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: {{ no_steps|map('string')|list|tojson }}
+            }]
+            };
+
+        //Sleep-RHR
+            const sleep_rhr_labels = {{ sleep_date|map('string')|list|tojson }};
+            const sleep_rhr_data = {
+              labels: sleep_rhr_labels,
+              datasets: [
+                {
+                  label: 'Sleep',
+                  data: {{ hr_sleep_hours }},
+                  borderColor: 'rgb(69,178,155)',
+                  backgroundColor: 'rgb(69,178,155)',
+                  type: 'bar',
+                  order: 2
+
+                },
+                {
+                  label: 'HR',
+                  data: {{ hr_rhr }},
+                  borderColor: 'rgb(255, 99, 132)',
+                  backgroundColor: 'rgb(255, 99, 132)',
+                  type: 'line',
+                  order: 1
+                }
+              ]
+            };
+              const sleep_rhr_config = {
+                  type: 'bar',
+                  data: sleep_rhr_data,
+                  options: {
+                    responsive: true,
+                    plugins: {
+                      legend: {
+                        position: 'top',
+                      },
+                      title: {
+                        display: true,
+                        text: 'Sleep/RHR Combo Line/Bar Chart'
+                      }
+                    },
+                  },
+            };
+
+        //Sleep Stages
+            const sleep_stages_labels = {{ sleep_date_stages|map('string')|list|tojson }};
+            const sleep_stages_data = {
+              labels: sleep_stages_labels,
+              datasets: [
+                {
+                  label: 'Deep Sleep',
+                  data: {{ sleep_deep }},
+                  backgroundColor: 'rgb(5,59,100)',
+                },
+                {
+                  label: 'REM Sleep',
+                  data: {{ sleep_rem }},
+                  backgroundColor: 'rgb(54,98,131)',
+                },
+                {
+                  label: 'Light Sleep',
+                  data: {{ sleep_light }},
+                  backgroundColor: 'rgb(105,137,162)',
+                },
+                {
+                  label: 'Awake Sleep',
+                  data: {{ sleep_wake }},
+                  backgroundColor: 'rgb(155,176,193)',
+                }
+              ]
+            };
+
+            const sleep_stages_config = {
+              type: 'bar',
+              data: sleep_stages_data,
+              options: {
+                plugins: {
+                  title: {
+                    display: true,
+                    text: 'Sleep Stages - Stacked'
+                  },
+                },
+                responsive: true,
+                scales: {
+                  x: {
+                    stacked: true,
+                  },
+                  y: {
+                    stacked: true
+                  }
+                }
+              }
+            };
+
+
+        //Initialise
+            function start(){
+                var ctx = document.getElementById("hr_chart").getContext("2d");
+                var hrChart = new Chart(ctx,
+                  {type: 'line',
+                  data: hr_data,
+                  options: {}}
+                );
+                var ctx2 = document.getElementById("sleep_chart").getContext("2d");
+                var sleepChart = new Chart(ctx2,
+                    {type: 'bar',
+                    data: sleep_data,
+                    options: {}}
+                );
+
+                var ctx3 = document.getElementById("steps_chart").getContext("2d");
+                var stepsChart = new Chart(ctx3,
+                    {type: 'bar',
+                    data: steps_data,
+                    options: {}}
+                );
+
+                var ctx4 = new Chart(
+                document.getElementById('sleep_rhr_chart'),
+                sleep_rhr_config
+                );
+
+                var ctx5 = new Chart(
+                document.getElementById('sleep_stages_chart'),
+                sleep_stages_config
+                );
+
+            }
+            window.onload = start();
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+    </body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Steps Chart</title>
+</head>
+<body>
+<div>
+    <canvas id="steps_graph"></canvas>
+</div>
+<script>
+
+const data = {
+    labels: {{ steps_date|map('string')|list|tojson }},
+    datasets: [{
+        label: 'Number of Steps',
+        backgroundColor: 'rgb(255, 99, 132)',
+        borderColor: 'rgb(255, 99, 132)',
+        data: {{ no_steps|map('string')|list|tojson }}
+}]
+};
+const config = {
+    type: 'bar',
+    data,
+    options: {}
+};
+var myChart = new Chart(
+    document.getElementById('steps_graph'),
+    config
+);
+</script>
+</body>
+</html>

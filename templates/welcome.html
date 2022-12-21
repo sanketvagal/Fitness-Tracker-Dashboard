@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome!</title>
+        $( function() {
+    $( "#datepicker" ).datepicker(
+        dateFormat: 'mm-dd-yy');
+    } );
+</head>
+<body>
+    <h1>Welcome to my page!</h1>
+    <p>
+        This is the demo application for the course
+        <em>Getting Started with Flask</em>
+        on <a href="https://www.pluralsight.com">
+        Pluralsight</a>.
+    </p>
+
+    <h2>Flash Cards</h2>
+    <ul>
+        {% for card in cards %}
+            <li>
+                <a href="{{ url_for('card_view', index=loop.index0) }}">
+                    {{ card.question }}
+
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

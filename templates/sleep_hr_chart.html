@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Sleep-RHR Chart</title>
+</head>
+<body>
+    <div>
+        <canvas id="sleep_rhr_graph"></canvas>
+    </div>
+    <script>
+        const labels = {{ sleep_date|map('string')|list|tojson }};
+        const sleep_hr_data = {
+          labels: labels,
+          datasets: [
+            {
+              label: 'Sleep',
+              data: {{ sleep_hours }},
+              borderColor: 'rgb(255, 99, 132)',
+              backgroundColor: 'rgb(255, 99, 132)',
+              stack: 'combined',
+              type: 'bar'
+            },
+            {
+              label: 'HR',
+              data: {{ hr_rhr }},
+              borderColor: 'rgb(255, 99, 132)',
+              backgroundColor: 'rgb(255, 99, 132)',
+              stack: 'combined'
+            }
+          ]
+        };
+          const config = {
+              type: 'line',
+              data: sleep_hr_data,
+              options: {
+                plugins: {
+                  title: {
+                    display: true,
+                    text: 'Sleep/RHR Stacked Line/Bar Chart'
+                  }
+                },
+                scales: {
+                  y: {
+                    stacked: true
+                  }
+                }
+              },
+        };
+        var myChart = new Chart(
+        document.getElementById('sleep_rhr_graph'),
+        config
+        );
+    </script>
+</body>
+</html>

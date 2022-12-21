@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Fitbit - Select Date</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+</head>
+<body>
+    <form action="{{ url_for('date')}}" method = 'post'>
+    <input type="text" name="startdate" value="10/24/1984" />
+    <script>
+    $(function() {
+      $('input[name="startdate"]').daterangepicker({
+        singleDatePicker: true,
+        showDropdowns: true,
+        minYear: 2020,
+        maxYear: parseInt(moment().format(),10)
+      });
+    });
+    </script>
+        <input type="text" name="enddate" value="10/24/1984" />
+    <script>
+    $(function() {
+      $('input[name="enddate"]').daterangepicker({
+        locale: {
+            format: 'YYYY-MM-DD'
+        }
+        singleDatePicker: true,
+        showDropdowns: true,
+        minYear: 2020,
+        maxYear: parseInt(moment().format('YYYY'),10)
+      });
+    });
+    </script>
+        <input type='submit' value='Submit'>
+    </form>
+<!--    <p>Date: <input type="text" id="datepicker" size="30"></p>-->
+<!--        <input type='submit', value = 'Delete'>-->
+<!--    <form action="{{ url_for('date')}}" method = 'post'>-->
+<!--        start date:<br>-->
+<!--		<input type ='text' size='30' name='startdate'><br>-->
+<!--        end date:-->
+<!--        <input type ='text' size='30' name='enddate'><br>-->
+<!--        <input type='submit' value='Submit'>-->
+
+<!--    </form>-->
+
+
+
+    </select>
+    </p>
+</body>
+</html>

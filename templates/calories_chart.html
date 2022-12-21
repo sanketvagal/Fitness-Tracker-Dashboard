@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Sleep Chart</title>
+</head>
+<body>
+<div>
+    <canvas id="sleep_graph"></canvas>
+</div>
+<script>
+const labels = {{ calories_date|map('string')|list|tojson }}
+const data = {
+    labels: labels,
+    datasets: [{
+        label: 'Calories Burned',
+        backgroundColor: 'rgb(255, 99, 132)',
+        borderColor: 'rgb(255, 99, 132)',
+        data: {{ calories_burned }},
+}]
+};
+const config = {
+    type: 'bar',
+    data,
+    options: {}
+};
+var myChart = new Chart(
+    document.getElementById('calories_graph'),
+    config
+);
+</script>
+</body>
+</html>

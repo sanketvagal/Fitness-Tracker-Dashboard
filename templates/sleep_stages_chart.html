@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Sleep-RHR Chart</title>
+</head>
+<body>
+    <div>
+        <canvas id="sleep_stages_graph"></canvas>
+    </div>
+    <script>
+
+        const sleep_stages_labels = {{ sleep_date|map('string')|list|tojson }};
+        const data = {
+          labels: sleep_stages_labels,
+          datasets: [
+            {
+              label: 'Deep Sleep',
+              data: {{ sleep_deep }},
+              backgroundColor: 'rgb(5,59,100)',
+            },
+            {
+              label: 'REM Sleep',
+              data: {{ sleep_rem }},
+              backgroundColor: 'rgb(54,98,131)',
+            },
+            {
+              label: 'Light Sleep',
+              data: {{ sleep_light }},
+              backgroundColor: 'rgb(105,137,162)',
+            },
+            {
+              label: 'Awake Sleep',
+              data: {{ sleep_wake }},
+              backgroundColor: 'rgb(155,176,193)',
+            }
+          ]
+        };
+
+        const config = {
+          type: 'bar',
+          data: data,
+          options: {
+            plugins: {
+              title: {
+                display: true,
+                text: 'Sleep Stages - Stacked'
+              },
+            },
+            responsive: true,
+            scales: {
+              x: {
+                stacked: true,
+              },
+              y: {
+                stacked: true
+              }
+            }
+          }
+        };
+        var sleepStagesChart = new Chart(
+        document.getElementById('sleep_stages_graph'),
+        config
+        );
+    </script>
+</body>
+</html>
